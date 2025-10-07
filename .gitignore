@@ -146,9 +146,6 @@ ehthumbs.db
 Thumbs.db
 
 # Project specific
-output/
-*.dng
-*.tiff
-*.tif
+
 sample_data/
 temp/
