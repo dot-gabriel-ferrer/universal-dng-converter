@@ -5,6 +5,12 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
 
+<!-- After first release re-enable (examples):
+[![PyPI Version](https://img.shields.io/pypi/v/universal-dng-converter.svg)](https://pypi.org/project/universal-dng-converter/)
+[![Python Versions](https://img.shields.io/pypi/pyversions/universal-dng-converter.svg)](https://pypi.org/project/universal-dng-converter/)
+[![CI](https://github.com/dot-gabriel-ferrer/universal-dng-converter/actions/workflows/ci.yml/badge.svg)](https://github.com/dot-gabriel-ferrer/universal-dng-converter/actions/workflows/ci.yml)
+-->
+
 Professional multi-format image converter with DNG output support for astronomical and photographic applications.
 
 ## Overview
@@ -181,6 +187,11 @@ pip install universal-dng-converter  # (pending publication)
 EXR support:
 ```bash
 pip install universal-dng-converter[exr]
+```
+
+If you need LZW compression support install:
+```
+pip install imagecodecs
 ```
 
 ### Basic Usage

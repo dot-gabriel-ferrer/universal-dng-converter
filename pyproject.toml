@@ -4,9 +4,9 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "universal-dng-converter"
-version = "1.0.0"
+version = "1.0.1"
 authors = [
-    {name = "Gabriel Ferrer", email = "gabriel@example.com"},
+    {name = "Elías Gabriel Ferrer Jorge", email = "gabrielferrerjorge@gmail.com"},
 ]
 description = "Professional multi-format image converter with DNG output support"
 readme = "README.md"

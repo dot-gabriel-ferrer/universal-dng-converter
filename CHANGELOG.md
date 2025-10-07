@@ -33,3 +33,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Memory efficiency for large astronomical images
 - Proper handling of different bit depths
 - Robust error handling for corrupted files
+
+## [1.0.1] - 2025-10-07
+
+### Added
+- Functional and real sample image tests (`tests/test_functional_conversion.py`, `tests/test_real_images.py`).
+- Step-by-step setup guide in README.
+
+### Changed
+- README reorganized; removed broken badges; clarified batch behavior.
+- Version bump for initial PyPI release preparation.
+
+### Fixed
+- CLI examples referencing non-existent flags (`--batch`).
+- LZW compression dependency note (added troubleshooting guidance).
+
+### Pending / Roadmap
+- Configurable compression option.
+- Extension filtering flag.
+- Parallel batch processing.
