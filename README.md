@@ -101,7 +101,7 @@ result = converter.convert_to_dng(
 
 ### Dependencies
 - **astropy** - FITS file handling and astronomical calculations
-- **Pillow** - Core image processing capabilities  
+- **Pillow** - Core image processing capabilities
 - **tifffile** - Advanced TIFF/DNG output generation
 - **numpy** - High-performance numerical operations
 
@@ -122,7 +122,7 @@ result = converter.convert_to_dng(
 The converter offers four intelligent scaling methods optimized for different data types:
 
 - **🤖 Auto**: Automatically selects optimal method based on image characteristics
-- **📈 Linear**: Full dynamic range mapping (min→0, max→max_value)  
+- **📈 Linear**: Full dynamic range mapping (min→0, max→max_value)
 - **📊 Percentile**: Robust scaling using 1st-99th percentiles (recommended for noisy data)
 - **🔒 None**: Preserves original values without modification
 

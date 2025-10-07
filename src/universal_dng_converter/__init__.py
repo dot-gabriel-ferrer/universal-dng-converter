@@ -8,6 +8,9 @@ __version__ = "1.0.0"
 __author__ = "Gabriel Ferrer"
 __license__ = "MIT"
 
-from .converter import DNGImageConverter
+from .converter import ImageConverter
 
-__all__ = ["DNGImageConverter"]
+# Alias for backwards compatibility and clearer naming
+DNGImageConverter = ImageConverter
+
+__all__ = ["DNGImageConverter", "ImageConverter"]
