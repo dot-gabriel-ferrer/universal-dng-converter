@@ -182,7 +182,9 @@ class ImageConverter:
     ) -> None:
         tags: Dict[str, Any] = {
             "Software": "universal-dng-converter",
-            "ImageDescription": f"Converted from {metadata.get('ORIGINAL_FORMAT','?')}",
+            "ImageDescription": (
+                f"Converted from {metadata.get('ORIGINAL_FORMAT', '?')}"
+            ),
         }
         for k, v in metadata.items():
             if isinstance(v, (str, int, float)) and len(str(v)) < 80:
