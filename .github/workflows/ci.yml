@@ -24,8 +24,8 @@ jobs:
           pip install .[dev]
       - name: Lint & Type Check
         run: |
-          black --check .
-          flake8 .
+          black --check src tests
+          flake8 src tests
           mypy src
       - name: Run tests
         run: |
