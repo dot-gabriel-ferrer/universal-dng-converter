@@ -12,6 +12,124 @@ Professional multi-format image converter with DNG output support for astronomic
 
 Universal DNG Converter is a robust, production-ready tool that converts various image formats to Adobe's Digital Negative (DNG) format while preserving metadata and providing intelligent scaling options. Originally designed for astronomical imaging workflows, it excels at handling high-dynamic-range data from FITS files while supporting standard photographic formats.
 
+## Step-by-Step Guide: Fresh Clone to First DNG
+
+### 1. Prerequisites
+- Python 3.8–3.12
+- Recommended: virtual environment
+- Optional: `opencv-python` for EXR (install later if needed)
+
+### 2. Clone
+```
+git clone https://github.com/dot-gabriel-ferrer/universal-dng-converter.git
+cd universal-dng-converter
+```
+
+### 3. Environment
+```
+python -m venv .venv
+source .venv/bin/activate  # Windows: .venv\\Scripts\\Activate.ps1
+```
+
+### 4. Install
+Development (with tests, lint, type checking):
+```
+pip install -U pip
+pip install -e .[dev]
+```
+Runtime only:
+```
+pip install .
+```
+Add EXR later:
+```
+pip install opencv-python
+```
+
+### 5. Sanity Check
+```
+universal-dng-converter --help
+```
+You should see CLI options including scaling and batch flags.
+
+### 6. Single Conversion
+```
+universal-dng-converter --input tests/test_images/test_grayscale.jpg --output output.dng
+```
+If `--output` is a directory, the name is derived automatically.
+
+### 7. Batch Conversion
+```
+universal-dng-converter \
+  --input tests/test_images \
+  --output converted_dngs \
+  --batch --recursive --extensions ".png,.jpg,.fits"
+```
+
+### 8. Scaling Methods
+- auto (default): heuristic min/max
+- linear: raw min→0, max→65535 mapping
+- percentile: robust (defaults p2/p98) — use for noisy FITS
+- none: no scaling (may clip or appear dark)
+Example:
+```
+universal-dng-converter --input image.fits --output out.dng --scaling percentile --pmin 1 --pmax 99
+```
+
+### 9. Python API
+```python
+from universal_dng_converter import ImageConverter
+
+conv = ImageConverter(scaling="auto")
+dst = conv.convert_to_dng("tests/test_images/test_color.png", "color.dng")
+print("Created:", dst)
+
+for src, out in conv.batch_convert("tests/test_images", "batch_out", recursive=False):
+    print(src, '->', out)
+```
+
+### 10. Validate Output
+```
+exiftool color.dng | grep -E "(Software|Bits Per Sample|DNG Version)"
+```
+Open in Lightroom / darktable (note: pseudo-DNG; not a native sensor raw).
+
+### 11. Tests & Quality
+```
+pytest -q
+pre-commit install
+git add . && git commit -m "quality run"
+```
+Hooks: black, flake8, mypy, etc.
+
+### 12. Troubleshooting
+| Issue | Fix |
+|-------|-----|
+| Dark image | Try --scaling percentile |
+| Washed out | Adjust --pmin/--pmax or use linear |
+| EXR not loading | Install opencv-python |
+| FITS header missing | Verify primary HDU has image data |
+
+### 13. Limitations
+- Outputs TIFF with DNG-like tags (not full raw sensor pipeline)
+- No compression toggle yet (planned)
+- Color profile not embedded (assumed sRGB)
+
+### 14. Roadmap
+- Compression selection (LZW/Deflate)
+- Parallel batch mode
+- Enhanced metadata (camera model passthrough)
+- EXR automated tests
+
+### 15. Contributing (Quick)
+1. Fork & branch
+2. `pip install -e .[dev]`
+3. `pre-commit install`
+4. Add tests, run `pytest -q`
+5. Open PR
+
+---
+
 ## ✨ Features
 
 - **🎯 Multi-format support**: FITS, PNG, JPEG, TIFF, BMP, GIF (first frame), EXR
