@@ -1,0 +1,8 @@
+# Core dependencies
+astropy>=5.0
+pillow>=8.0.0
+tifffile>=2021.1.11
+numpy>=1.20.0
+
+# Optional dependencies for enhanced format support
+opencv-python>=4.5.0  # For EXR format support

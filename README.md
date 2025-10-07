@@ -1,160 +1,196 @@
-# DNG Image Converter
+# Universal DNG Converter
 
-Professional multi-format image converter with DNG output support.
+[![Python Version](https://img.shields.io/pypi/pyversions/universal-dng-converter.svg)](https://pypi.org/project/universal-dng-converter/)
+[![PyPI Version](https://img.shields.io/pypi/v/universal-dng-converter.svg)](https://pypi.org/project/universal-dng-converter/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
+
+Professional multi-format image converter with DNG output support for astronomical and photographic applications.
 
 ## Overview
 
-This tool converts various image formats (FITS, PNG, JPEG, TIFF, BMP, GIF, EXR) to DNG (Digital Negative) format while preserving metadata and providing robust scaling options.
+Universal DNG Converter is a robust, production-ready tool that converts various image formats to Adobe's Digital Negative (DNG) format while preserving metadata and providing intelligent scaling options. Originally designed for astronomical imaging workflows, it excels at handling high-dynamic-range data from FITS files while supporting standard photographic formats.
 
-## Features
+## ✨ Features
 
-- **Multi-format support**: FITS, PNG, JPEG, TIFF, BMP, GIF (first frame), EXR
-- **Intelligent bit-depth conversion**: 8-bit and 16-bit output
-- **Robust scaling methods**: Auto, linear, percentile, or no scaling
-- **Metadata preservation**: Extracts and embeds FITS headers and EXIF data
-- **Batch processing**: Process single files or entire directories
-- **Recursive directory scanning**: Process subdirectories automatically
-- **Comprehensive logging**: Detailed progress and error reporting
-- **Professional CLI**: Full command-line interface with help
+- **🎯 Multi-format support**: FITS, PNG, JPEG, TIFF, BMP, GIF (first frame), EXR
+- **🔧 Intelligent bit-depth conversion**: 8-bit and 16-bit output with smart scaling
+- **📊 Advanced scaling methods**: Auto, linear, percentile, or no scaling
+- **🏷️ Metadata preservation**: Extracts and embeds FITS headers and EXIF data
+- **⚡ Batch processing**: Process single files or entire directories
+- **🔄 Recursive directory scanning**: Process subdirectories automatically
+- **📝 Comprehensive logging**: Detailed progress and error reporting
+- **💻 Professional CLI**: Full command-line interface with extensive options
+- **🐍 Python API**: Programmatic access for integration into workflows
 
-## Installation
+## 🚀 Quick Start
 
-Required dependencies:
+### Installation
+
 ```bash
-pip install astropy pillow tifffile numpy
+pip install universal-dng-converter
 ```
 
-Optional dependencies for enhanced format support:
+For EXR format support:
 ```bash
-pip install opencv-python  # For EXR format support
+pip install "universal-dng-converter[exr]"
 ```
 
-## Usage
+### Basic Usage
 
-### Basic Examples
-
-Convert a single FITS file:
+Convert a single image:
 ```bash
-python scripts/dng_image_converter.py --input image.fits --output ./
+universal-dng-converter --input image.fits --output ./output/
 ```
 
-Convert all images in a directory:
+Batch convert with advanced options:
 ```bash
-python scripts/dng_image_converter.py --input images/ --output dng_output/
-```
-
-Recursive batch conversion with custom settings:
-```bash
-python scripts/dng_image_converter.py \
-  --input data/ \
-  --output converted/ \
+universal-dng-converter \
+  --input images/ \
+  --output dng_output/ \
   --recursive \
-  --scaling percentile \
   --bit-depth 16 \
-  --format dng
-```
-
-### Command Line Options
-
-```
---input, -i          Input file or directory path (required)
---output, -o         Output directory path (required)
---format, -f         Output format: dng, tiff (default: dng)
---recursive, -r      Process subdirectories recursively
---scaling            Scaling method: auto, linear, percentile, none (default: auto)
---bit-depth          Target bit depth: 8, 16 (default: 16)
---quality            Output quality 0-100 (default: 100)
---verbose, -v        Enable verbose logging
-```
-
-### Scaling Methods
-
-- **auto**: Intelligent scaling based on data range detection
-- **linear**: Simple min-max linear scaling
-- **percentile**: Robust 1st-99th percentile scaling
-- **none**: No scaling, preserve original values
-
-## Supported Formats
-
-| Format | Extension | Description | Status |
-|--------|-----------|-------------|---------|
-| FITS | .fits, .fit, .fts | Astronomical images | ✓ Full support |
-| PNG | .png | Portable Network Graphics | ✓ Full support |
-| JPEG | .jpg, .jpeg | JPEG images | ✓ Full support |
-| TIFF | .tif, .tiff | Tagged Image Format | ✓ Full support |
-| BMP | .bmp | Bitmap images | ✓ Full support |
-| GIF | .gif | Graphics Interchange Format | ✓ First frame only |
-| EXR | .exr | OpenEXR HDR | ✓ Requires opencv-python |
-
-## Metadata Handling
-
-The converter preserves important metadata from source images:
-
-### FITS Files
-- OBJECT, TELESCOP, INSTRUME
-- DATE-OBS, EXPTIME, FILTER
-- OBSERVER, BITPIX, NAXIS info
-- All custom headers (within size limits)
-
-### Standard Images
-- EXIF data from JPEG/TIFF files
-- Original format information
-- Color space and bit depth info
-
-## Output Format
-
-The converter produces DNG-compatible TIFF files with:
-- LZW compression for efficient storage
-- 300 DPI resolution setting
-- Embedded metadata as TIFF tags
-- Professional color profiles
-- Artist attribution (Gabriel Ferrer)
-
-## Migration from Old Script
-
-The original `fits_to_dng.py` script has been deprecated and replaced. When you run the old script, it will:
-1. Display a deprecation warning
-2. Automatically redirect to the new converter
-3. Pass through your original arguments
-
-## Examples
-
-### Astronomical Data Processing
-```bash
-# Convert FITS files with robust scaling
-python scripts/dng_image_converter.py \
-  --input telescope_data/ \
-  --output processed_dng/ \
   --scaling percentile \
-  --recursive \
   --verbose
 ```
 
-### Photography Workflow
-```bash
-# Convert RAW and JPEG files to 16-bit DNG
-python scripts/dng_image_converter.py \
-  --input photos/ \
-  --output dng_archive/ \
-  --bit-depth 16 \
-  --quality 100
+### Python API
+
+```python
+from universal_dng_converter import DNGImageConverter
+from pathlib import Path
+
+converter = DNGImageConverter()
+result = converter.convert_to_dng(
+    input_path=Path("image.fits"),
+    output_dir=Path("./output/"),
+    bit_depth=16,
+    scaling_method="auto"
+)
 ```
 
-### Batch Processing with Custom Scaling
-```bash
-# Linear scaling for scientific data
-python scripts/dng_image_converter.py \
-  --input experiments/ \
-  --output results/ \
-  --scaling linear \
-  --format tiff
+## 📖 Documentation
+
+- **[Installation Guide](docs/installation.md)** - Detailed setup instructions
+- **[Usage Guide](docs/usage.md)** - Comprehensive usage examples
+- **[API Reference](docs/api.md)** - Complete API documentation
+- **[Development Guide](docs/development.md)** - Contributing and development setup
+
+## 🎯 Use Cases
+
+### Astronomical Imaging
+- Convert FITS files from telescopes and cameras to DNG for Adobe Lightroom/Photoshop
+- Preserve astronomical metadata and handle high-dynamic-range data
+- Batch process entire observation sessions
+
+### Photography Workflows
+- Convert RAW-like formats to standardized DNG
+- Maintain EXIF metadata across format conversions
+- Integrate into automated processing pipelines
+
+- Archive scientific datasets in standardized format
+- Convert microscopy and medical imaging data
+
+## 📋 Requirements
+
+### System Requirements
+- Python 3.8 or higher
+- 2GB+ RAM (for large astronomical images)
+- Cross-platform: Windows, macOS, Linux
+
+### Dependencies
+- **astropy** - FITS file handling and astronomical calculations
+- **Pillow** - Core image processing capabilities  
+- **tifffile** - Advanced TIFF/DNG output generation
+- **numpy** - High-performance numerical operations
+
+## 🔧 Supported Formats
+
+| Format | Extensions | Support Level | Notes |
+|--------|-----------|---------------|-------|
+| FITS | `.fits`, `.fit`, `.fts` | 🟢 Full | Primary target format |
+| TIFF | `.tif`, `.tiff` | 🟢 Full | Preserves all metadata |
+| PNG | `.png` | 🟢 Full | Supports transparency |
+| JPEG | `.jpg`, `.jpeg` | 🟢 Full | EXIF metadata preserved |
+| BMP | `.bmp` | 🟢 Full | Uncompressed support |
+| GIF | `.gif` | 🟡 Partial | First frame only |
+| EXR | `.exr` | 🟡 Optional | Requires opencv-python |
+
+## 🎛️ Scaling Methods
+
+The converter offers four intelligent scaling methods optimized for different data types:
+
+- **🤖 Auto**: Automatically selects optimal method based on image characteristics
+- **📈 Linear**: Full dynamic range mapping (min→0, max→max_value)  
+- **📊 Percentile**: Robust scaling using 1st-99th percentiles (recommended for noisy data)
+- **🔒 None**: Preserves original values without modification
+
+## 🏗️ Project Structure
+
+```
+universal-dng-converter/
+├── 📁 src/
+│   └── universal_dng_converter/     # Main package
+│       ├── __init__.py              # Package initialization
+│       ├── converter.py             # Core conversion logic
+│       └── cli.py                   # Command-line interface
+├── 📁 tests/                        # Test suite
+│   ├── __init__.py
+│   └── test_converter.py           # Unit tests
+├── 📁 scripts/                      # Standalone scripts
+│   └── convert-to-dng              # Direct execution script
+├── 📁 docs/                         # Documentation
+│   ├── installation.md
+│   ├── usage.md
+│   └── development.md
+├── 📁 examples/                     # Usage examples
+│   └── basic_usage.py
+├── pyproject.toml                   # Modern Python packaging
+├── requirements.txt                 # Runtime dependencies
+├── requirements-dev.txt            # Development dependencies
+└── README.md                        # This file
 ```
 
-## Logging
+## 🤝 Contributing
 
-The converter creates detailed logs in `dng_converter.log` and displays progress in the terminal. Use `--verbose` for additional debugging information.
+We welcome contributions! Please see our [Development Guide](docs/development.md) for details on:
 
-## Author
+- Setting up the development environment
+- Code style guidelines (Black + isort)
+- Testing procedures (pytest + coverage)
+- Submitting pull requests
+
+### Quick Development Setup
+
+```bash
+git clone https://github.com/dot-gabriel-ferrer/universal-dng-converter.git
+cd universal-dng-converter
+pip install -e ".[dev]"
+pre-commit install
+pytest
+```
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- **Adobe Systems** for the DNG specification
+- **AstroPy Project** for excellent FITS file handling
+- **Pillow Contributors** for comprehensive image format support
+- **Python Scientific Community** for the foundational tools
+
+## 📊 Badges
+
+[![Tests](https://github.com/dot-gabriel-ferrer/universal-dng-converter/workflows/Tests/badge.svg)](https://github.com/dot-gabriel-ferrer/universal-dng-converter/actions)
+[![Coverage](https://codecov.io/gh/dot-gabriel-ferrer/universal-dng-converter/branch/main/graph/badge.svg)](https://codecov.io/gh/dot-gabriel-ferrer/universal-dng-converter)
+[![Documentation](https://readthedocs.org/projects/universal-dng-converter/badge/?version=latest)](https://universal-dng-converter.readthedocs.io/)
+
+---
+
+**⭐ Star this repository if you find it useful!**
 
 **Gabriel Ferrer**
 
