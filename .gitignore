@@ -146,7 +146,6 @@ ehthumbs.db
 Thumbs.db
 
 # Project specific
-test_images/
 output/
 *.dng
 *.tiff

@@ -198,7 +198,7 @@ class ImageConverter:
             output_path,
             data,
             photometric="rgb" if data.ndim == 3 else "minisblack",
-            compression="lzw",
+            compression="zlib",
             metadata=tags,
         )
         logger.info("Written %s", output_path)
