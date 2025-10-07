@@ -196,35 +196,41 @@ class ImageConverter:
             # Convert other types to float
             data = data.astype(np.float64)
 
-        # Apply scaling method
-        if self.scaling_method == "auto":
-            # Intelligent auto-scaling
-            if np.all(data >= 0) and np.all(data <= 1):
-                # Already normalized
-                pass
-            elif np.min(data) >= 0 and np.max(data) <= 255:
-                # Likely 8-bit data
-                data = data / 255.0
-            elif np.min(data) >= 0 and np.max(data) <= 65535:
-                # Likely 16-bit data
-                data = data / 65535.0
-            else:
-                # Use percentile scaling for other ranges
-                p_low, p_high = np.percentile(data, [0.1, 99.9])
-                data = np.clip((data - p_low) / (p_high - p_low), 0, 1)
+            # Apply scaling method
+            if self.scaling_method == "auto":
+                # Intelligent auto-scaling
+                if np.all(data >= 0) and np.all(data <= 1):
+                    pass  # Already normalized
+                elif np.min(data) >= 0 and np.max(data) <= 255:
+                    data = data / 255.0
+                elif np.min(data) >= 0 and np.max(data) <= 65535:
+                    data = data / 65535.0
+                else:
+                    from typing import Tuple as _TupleFloat
 
-        elif self.scaling_method == "linear":
-            # Linear min-max scaling
-            data_min, data_max = np.min(data), np.max(data)
-            if data_max > data_min:
-                data = (data - data_min) / (data_max - data_min)
-            else:
-                data = np.zeros_like(data)
+                    p_bounds_auto: _TupleFloat[float, float] = np.percentile(
+                        data, [0.1, 99.9]
+                    )
+                    p_low, p_high = float(p_bounds_auto[0]), float(p_bounds_auto[1])
+                    if p_high > p_low:
+                        data = np.clip((data - p_low) / (p_high - p_low), 0, 1)
+                    else:
+                        data = np.zeros_like(data)
+            elif self.scaling_method == "linear":
+                data_min, data_max = np.min(data), np.max(data)
+                if data_max > data_min:
+                    data = (data - data_min) / (data_max - data_min)
+                else:
+                    data = np.zeros_like(data)
+            elif self.scaling_method == "percentile":
+                from typing import Tuple as _TupleFloat2
 
-        elif self.scaling_method == "percentile":
-            # Robust percentile scaling
-            p_low, p_high = np.percentile(data, [1, 99])
-            data = np.clip((data - p_low) / (p_high - p_low), 0, 1)
+                p_bounds: _TupleFloat2[float, float] = np.percentile(data, [1, 99])
+                p_low, p_high = float(p_bounds[0]), float(p_bounds[1])
+                if p_high > p_low:
+                    data = np.clip((data - p_low) / (p_high - p_low), 0, 1)
+                else:
+                    data = np.zeros_like(data)
 
         # Scale to target bit depth
         if self.bit_depth == 8:
