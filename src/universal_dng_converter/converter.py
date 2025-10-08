@@ -402,9 +402,11 @@ class ImageConverter:
             "Make": make,
             "Model": model,
             # CRÍTICO: Software que rawpy reconoce
-            "Software": "Canon Digital Photo Professional"
-            if "Canon" in make
-            else f"{make} Software",
+            "Software": (
+                "Canon Digital Photo Professional"
+                if "Canon" in make
+                else f"{make} Software"
+            ),
             # CRÍTICO: Fechas
             "DateTime": "2023:10:08 12:00:00",
             "DateTimeOriginal": "2023:10:08 12:00:00",
@@ -1025,9 +1027,9 @@ class ImageConverter:
                     "CAMERA_MODEL": "Pseudo RAW Camera",
                     "ISO": 100,
                     "WHITE_LEVEL": 16383 if data.dtype == np.uint16 else 255,
-                    "BLACK_LEVEL": [64, 64, 64, 64]
-                    if data.dtype == np.uint16
-                    else [2, 2, 2, 2],
+                    "BLACK_LEVEL": (
+                        [64, 64, 64, 64] if data.dtype == np.uint16 else [2, 2, 2, 2]
+                    ),
                     "PSEUDO_RAW": True,
                 }
             )
