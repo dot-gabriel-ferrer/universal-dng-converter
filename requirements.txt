@@ -6,3 +6,4 @@ numpy>=1.20.0
 
 # Optional dependencies for enhanced format support
 opencv-python>=4.5.0  # For EXR format support
+rawpy>=0.17.0  # For RAW format support and DNG validation

@@ -57,7 +57,13 @@ def test_convert_real_sample(filename: str):
             # Should preserve 16-bit depth typically
             assert arr.dtype == np.uint16
         if filename == "test_color.png":
-            assert arr.ndim == 3 and arr.shape[2] in (3, 4)
+            # With RAW mode, RGB images are converted to 2D Bayer pattern
+            if arr.ndim == 2:
+                # RAW mode: converted to Bayer pattern (2D)
+                assert arr.dtype == np.uint16
+            else:
+                # Standard mode: RGB preserved (3D)
+                assert arr.ndim == 3 and arr.shape[2] in (3, 4)
         if filename.endswith(".fits"):
             # FITS often scaled to full 16-bit
             assert arr.dtype == np.uint16

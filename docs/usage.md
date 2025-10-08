@@ -112,9 +112,9 @@ results = converter.batch_convert(
 # Check results
 for input_file, output_file in results:
     if output_file:
-        print(f"✓ {input_file} -> {output_file}")
+        print(f"Success: {input_file} -> {output_file}")
     else:
-        print(f"✗ Failed: {input_file}")
+        print(f"Failed: {input_file}")
 ```
 
 ## Supported Formats

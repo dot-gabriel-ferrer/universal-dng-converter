@@ -54,9 +54,9 @@ def example_batch_conversion() -> None:
     # Print individual results
     for input_file, output_file in results:
         if output_file:
-            print(f"✓ {input_file.name} -> {output_file.name}")
+            print(f"Success: {input_file.name} -> {output_file.name}")
         else:
-            print(f"✗ Failed: {input_file.name}")
+            print(f"Failed: {input_file.name}")
 
 
 def example_custom_scaling() -> None:
@@ -81,9 +81,9 @@ def example_custom_scaling() -> None:
         )
 
         if result:
-            print(f"✓ {method} scaling: {result}")
+            print(f"Success {method} scaling: {result}")
         else:
-            print(f"✗ {method} scaling failed")
+            print(f"Failed {method} scaling")
 
 
 def example_with_error_handling() -> None:
@@ -105,14 +105,14 @@ def example_with_error_handling() -> None:
             )
 
             if result:
-                print(f"✓ Successfully converted: {input_file}")
+                print(f"Successfully converted: {input_file}")
             else:
-                print(f"⚠ Conversion returned None for: {input_file}")
+                print(f"Warning: Conversion returned None for: {input_file}")
 
         except FileNotFoundError:
-            print(f"✗ File not found: {input_file}")
+            print(f"Error: File not found: {input_file}")
         except Exception as e:
-            print(f"✗ Error converting {input_file}: {e}")
+            print(f"Error converting {input_file}: {e}")
 
 
 if __name__ == "__main__":
