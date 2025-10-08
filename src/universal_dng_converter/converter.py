@@ -344,7 +344,7 @@ class ImageConverter:
             scaled_bayer = bayer.astype(np.float32) / 65535.0 * 3500 + 512
             bayer = scaled_bayer.astype(np.uint16)
 
-        return bayer
+        return np.array(bayer, dtype=np.uint16)
 
     def _prepare_as_sensor_data(self, data: np.ndarray) -> np.ndarray:
         """Prepare grayscale data to look like raw sensor data."""
@@ -370,7 +370,7 @@ class ImageConverter:
         noisy_data = np.clip(sensor_data.astype(np.int32) + noise, 512, 4095)
         sensor_data = noisy_data.astype(np.uint16)
 
-        return sensor_data
+        return np.array(sensor_data, dtype=np.uint16)
 
     def _create_realistic_camera_metadata(
         self, metadata: Dict[str, Any]
@@ -552,7 +552,7 @@ class ImageConverter:
         # Blue: bottom-right pixels (odd row, odd col)
         bayer[1::2, 1::2] = rgb_data[1::2, 1::2, 2]  # Blue channel
 
-        return bayer
+        return np.array(bayer, dtype=bayer.dtype)
 
     def _get_raw_dng_tags(
         self, data: np.ndarray, metadata: Dict[str, Any]
