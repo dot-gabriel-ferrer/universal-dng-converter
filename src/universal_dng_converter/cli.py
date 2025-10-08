@@ -6,7 +6,7 @@ CLI module for Universal DNG Converter.
 import argparse
 import sys
 from pathlib import Path
-from typing import Optional
+from typing import List, Optional
 
 from .converter import ImageConverter
 
@@ -61,7 +61,10 @@ def main() -> Optional[int]:
     parser.add_argument(
         "--raw-compatible",
         action="store_true",
-        help="Create RAW-compatible DNG files (readable by rawpy and similar libraries)",
+        help=(
+            "Create RAW-compatible DNG files "
+            "(readable by rawpy and similar libraries)"
+        ),
     )
 
     parser.add_argument(
@@ -80,7 +83,7 @@ def main() -> Optional[int]:
     parser.add_argument(
         "--validate-raw",
         action="store_true",
-        help="Validate RAW compatibility of generated DNG files (requires rawpy)",
+        help=("Validate RAW compatibility of generated DNG files " "(requires rawpy)"),
     )
 
     parser.add_argument(
@@ -195,7 +198,7 @@ def main() -> Optional[int]:
                 output_path = Path(args.output)
 
                 pattern = "**/*" if args.recursive else "*"
-                files = []
+                files: List[Path] = []
                 for ext in [
                     ".jpg",
                     ".jpeg",
@@ -218,7 +221,8 @@ def main() -> Optional[int]:
                 total_count = len(results)
 
                 print(
-                    f"Conversion completed: {success_count}/{total_count} files successful"
+                    f"Conversion completed: {success_count}/{total_count} "
+                    f"files successful"
                 )
                 print("  Used pseudo-RAW DNG format with sensor simulation")
 
@@ -243,7 +247,8 @@ def main() -> Optional[int]:
                 total_count = len(results)
 
                 print(
-                    f"Conversion completed: {success_count}/{total_count} files successful"
+                    f"Conversion completed: {success_count}/{total_count} "
+                    f"files successful"
                 )
                 if args.raw_compatible:
                     print("  Used RAW-compatible DNG format")

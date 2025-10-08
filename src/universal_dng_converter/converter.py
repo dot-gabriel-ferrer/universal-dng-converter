@@ -295,7 +295,7 @@ class ImageConverter:
         try:
             # Convert to Bayer pattern if RGB
             if data.ndim == 3:
-                bayer_data = self._rgb_to_bayer_rggb(data)
+                bayer_data = self._rgb_to_bayer(data)
             else:
                 # Prepare grayscale data to look like sensor data
                 bayer_data = self._prepare_as_sensor_data(data)
@@ -322,7 +322,7 @@ class ImageConverter:
             logger.info("Falling back to standard DNG format")
             self._write_standard_dng_tiff(data, output_path, metadata)
 
-    def _rgb_to_bayer_rggb(self, rgb_data: np.ndarray) -> np.ndarray:
+    def _rgb_to_bayer(self, rgb_data: np.ndarray) -> np.ndarray:
         """Convert RGB image to RGGB Bayer pattern."""
         height, width = rgb_data.shape[:2]
         bayer = np.zeros((height, width), dtype=np.uint16)
@@ -338,9 +338,11 @@ class ImageConverter:
 
         # Scale to 12-bit range with black level (typical camera values)
         if bayer.max() <= 255:  # 8-bit input
-            bayer = (bayer.astype(np.float32) / 255.0 * 3500 + 512).astype(np.uint16)
+            scaled_bayer = bayer.astype(np.float32) / 255.0 * 3500 + 512
+            bayer = scaled_bayer.astype(np.uint16)
         else:  # 16-bit input
-            bayer = (bayer.astype(np.float32) / 65535.0 * 3500 + 512).astype(np.uint16)
+            scaled_bayer = bayer.astype(np.float32) / 65535.0 * 3500 + 512
+            bayer = scaled_bayer.astype(np.uint16)
 
         return bayer
 
@@ -365,9 +367,8 @@ class ImageConverter:
 
         # Add subtle sensor noise
         noise = np.random.normal(0, 3, sensor_data.shape).astype(np.int16)
-        sensor_data = np.clip(sensor_data.astype(np.int32) + noise, 512, 4095).astype(
-            np.uint16
-        )
+        noisy_data = np.clip(sensor_data.astype(np.int32) + noise, 512, 4095)
+        sensor_data = noisy_data.astype(np.uint16)
 
         return sensor_data
 
@@ -468,7 +469,10 @@ class ImageConverter:
         dng_meta = {
             # Basic info
             "Software": "universal-dng-converter",
-            "ImageDescription": f"RAW DNG converted from {metadata.get('ORIGINAL_FORMAT', 'unknown')}",
+            "ImageDescription": (
+                f"RAW DNG converted from "
+                f"{metadata.get('ORIGINAL_FORMAT', 'unknown')}"
+            ),
             # DNG version info
             "DNGVersion": "1.4.0.0",
             "DNGBackwardVersion": "1.2.0.0",
@@ -504,9 +508,10 @@ class ImageConverter:
             if isinstance(metadata["BLACK_LEVEL"], (list, tuple)):
                 dng_meta["BlackLevel"] = " ".join(map(str, metadata["BLACK_LEVEL"]))
             else:
-                dng_meta[
-                    "BlackLevel"
-                ] = f"{metadata['BLACK_LEVEL']} {metadata['BLACK_LEVEL']} {metadata['BLACK_LEVEL']} {metadata['BLACK_LEVEL']}"
+                black_level = metadata["BLACK_LEVEL"]
+                dng_meta["BlackLevel"] = (
+                    f"{black_level} {black_level} " f"{black_level} {black_level}"
+                )
         else:
             dng_meta["BlackLevel"] = "0 0 0 0"
 
@@ -520,12 +525,16 @@ class ImageConverter:
     def _build_complete_dng_tags(
         self, data: np.ndarray, metadata: Dict[str, Any]
     ) -> Dict[int, Any]:
-        """Build complete set of DNG tags with proper TIFF tag numbers (legacy method)."""
+        """Build complete set of DNG tags with proper TIFF tag numbers.
+
+        This method is kept for compatibility but simplified.
+        """
         # This method is kept for compatibility but simplified
         return {}
 
     def _simulate_bayer_from_rgb(self, rgb_data: np.ndarray) -> np.ndarray:
-        """Convert RGB data to simulated Bayer pattern for RAW compatibility."""
+        """Convert RGB data to simulated Bayer pattern for RAW
+        compatibility."""
         if rgb_data.ndim != 3 or rgb_data.shape[2] != 3:
             return rgb_data
 
@@ -901,12 +910,14 @@ class ImageConverter:
                             with rawpy.imread(str(result)) as raw:
                                 _ = raw.raw_image
                             logger.info(
-                                f"Successfully created improved RAW-compatible DNG: {result}"
+                                f"Successfully created improved "
+                                f"RAW-compatible DNG: {result}"
                             )
                             return result
-                        except:
+                        except Exception:
                             logger.warning(
-                                "New DNG still not fully rawpy-compatible, but improved format created"
+                                "New DNG still not fully rawpy-compatible, "
+                                "but improved format created"
                             )
                             return result
                     else:
